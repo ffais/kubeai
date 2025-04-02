@@ -15,14 +15,17 @@ kubectl wait --timeout=3m --for=condition=Ready pod/s3
 # Execute into the kind container
 kind_container=$(docker ps --filter "name=kind-control-plane" --format "{{.ID}}")
 docker exec -i $kind_container bash -c "
-  apt update -y && apt install -y python3-pip
-  pip install -U "huggingface_hub[cli]" --break-system-packages
+  curl -LsSf https://astral.sh/uv/install.sh | sh
+  uv pip install "huggingface_hub[cli]" 
   mkdir -p ${PV_HOST_PATH}/models/facebook/opt-125m
   huggingface-cli download facebook/opt-125m --local-dir ${PV_HOST_PATH}/models/facebook/opt-125m \
     --exclude 'tf_model.h5' 'flax_model.msgpack'"
 
 kubectl create -f $TEST_DIR/upload-model-to-s3.yaml
 kubectl wait --for=condition=complete --timeout=120s job/upload-model-to-s3
+
+docker exec -i $kind_container bash -c "
+  rm -r ${PV_HOST_PATH}/models/"
 
 kubectl apply -f $TEST_DIR/model.yaml
 kubectl wait --timeout=5m --for=jsonpath='{.status.cache.loaded}'=true model/$model && \
