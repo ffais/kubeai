@@ -1,0 +1,64 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: rclone-config
+data:
+  rclone.conf: |
+    [seaweedfs]
+    type = s3
+    provider = SeaweedFS
+    env_auth = 1
+    access_key_id = testuser
+    secret_access_key = testuser
+    endpoint = http://s3:9000
+    acl = private
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: upload-model-to-s3
+  labels:
+    app: upload
+spec:
+  template:
+    metadata:
+      name: upload-model-to-s3
+      labels:
+        app: upload
+    spec:
+      restartPolicy: Never
+      initContainers:
+        - name: wait-for-s3
+          image: curlimages/curl
+          command:
+            - sh 
+            - -c 
+          args:
+            - 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' http://s3:9000/status)" != "200" ]]; do echo "wait for s3"; sleep 5; done'
+      containers:
+      - name: s3-mc-model
+        image: rclone/rclone:sha-839eef0
+        env:
+          - name: AWS_ACCESS_KEY_ID
+            value: testuser
+          - name: AWS_SECRET_ACCESS_KEY
+            value: testuser
+          - name: AWS_ENDPOINT_URL
+            value: s3:9000
+        command:
+        - /bin/sh
+        - -c
+        args: 
+        - "rclone mkdir seaweedfs:models && rclone copy models/ seaweedfs:models"
+        volumeMounts:
+        - mountPath: /data
+          name: localvolume
+        - mountPath: /config/rclone
+          name: rclone-config
+      volumes:
+      - name: localvolume
+        persistentVolumeClaim:
+          claimName: model-pvc
+      - name: rclone-config
+        configMap:
+          name: rclone-config
