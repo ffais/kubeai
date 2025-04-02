@@ -30,6 +30,7 @@ docker exec -i $kind_container bash -c "
 
 kubectl apply -f $TEST_DIR/model.yaml
 kubectl wait --timeout=5m --for=jsonpath='{.status.cache.loaded}'=true model/$model && \
+kubectl delete -f $TEST_DIR/s3-instance.yaml
 kubectl wait --timeout=5m --for=jsonpath='.status.replicas.ready'=1 model/${model}
 
 sleep 5
