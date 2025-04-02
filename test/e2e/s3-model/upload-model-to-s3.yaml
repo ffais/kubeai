@@ -14,12 +14,12 @@ spec:
       restartPolicy: Never
       initContainers:
         - name: wait-for-s3
-          image: curlimages/curl
+          image: amazon/aws-cli
           command:
             - sh 
             - -c 
           args:
-            - 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' http://s3:9000/status)" != "200" ]]; do sleep 10; echo "wait for s3"; sleep 5; done'
+            - 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' http://s3:9000/status)" != "200" ]]; do echo "wait for s3"; sleep 5; done'
       containers:
       - name: s3-mc-model
         image: amazon/aws-cli
@@ -30,8 +30,6 @@ spec:
             value: testuser
           - name: AWS_ENDPOINT_URL
             value: http://s3:9000
-        # command: [ "/bin/bash", "-c", "--" ]
-        # args: [ "while true; do sleep 30; done;" ]
         command:
         - /bin/bash
         - -c

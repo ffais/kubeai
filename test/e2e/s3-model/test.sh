@@ -30,7 +30,7 @@ docker exec -i $kind_container bash -c "
 
 kubectl apply -f $TEST_DIR/model.yaml
 kubectl wait --timeout=5m --for=jsonpath='{.status.cache.loaded}'=true model/$model && \
-kubectl wait --timeout=20m --for=jsonpath='.status.replicas.ready'=1 model/${model}
+kubectl wait --timeout=5m --for=jsonpath='.status.replicas.ready'=1 model/${model}
 
 sleep 5
 
