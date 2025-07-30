@@ -76,18 +76,15 @@ Create the name of the service account to use for model pods
 Create the name of the alibaba secret to use
 */}}
 {{- define "kubeai.alibabaSecretName" -}}
-{{- if .Values.secrets.alibaba.create -}}
-{{- if .Values.secrets.alibaba.name -}}
-{{- .Values.secrets.alibaba.name -}}
-{{- else }}
-{{- (include "kubeai.fullname" .)}}-alibaba
-{{- end}}
-{{- else }}
-{{- if not .Values.secrets.alibaba.name -}}
-{{ fail "if secrets.alibaba.create is false, secrets.alibaba.name is required" }}
-{{- end }}
-{{- .Values.secrets.alibaba.name }}
-{{- end }}
+  {{- if .Values.secrets.alibaba.create -}}
+    {{- if .Values.secrets.alibaba.name -}}
+      {{- .Values.secrets.alibaba.name -}}
+    {{- else }}
+      {{- (include "kubeai.fullname" .)}}-alibaba
+    {{- end}}
+  {{- else }}
+    {{- .Values.secrets.alibaba.name | quote }}
+  {{- end }}
 {{- end }}
 
 {{/*
@@ -101,10 +98,7 @@ Create the name of the aws secret to use
 {{- (include "kubeai.fullname" .)}}-aws
 {{- end}}
 {{- else }}
-{{- if not .Values.secrets.aws.name -}}
-{{ fail "if secrets.aws.create is false, secrets.aws.name is required" }}
-{{- end }}
-{{- .Values.secrets.aws.name }}
+{{- .Values.secrets.aws.name | quote }}
 {{- end }}
 {{- end }}
 
@@ -119,10 +113,7 @@ Create the name of the gcp secret to use
 {{- (include "kubeai.fullname" .)}}-gcp
 {{- end}}
 {{- else }}
-{{- if not .Values.secrets.gcp.name -}}
-{{ fail "if secrets.gcp.create is false, secrets.gcp.name is required" }}
-{{- end }}
-{{- .Values.secrets.gcp.name }}
+{{- .Values.secrets.gcp.name | quote }}
 {{- end }}
 {{- end }}
 
@@ -137,10 +128,7 @@ Create the name of the huggingface secret to use
 {{- (include "kubeai.fullname" .)}}-huggingface
 {{- end}}
 {{- else }}
-{{- if not .Values.secrets.huggingface.name -}}
-{{ fail "if secrets.huggingface.create is false, secrets.huggingface.name is required" }}
-{{- end }}
-{{- .Values.secrets.huggingface.name }}
+{{- .Values.secrets.huggingface.name | quote }}
 {{- end }}
 {{- end }}
 

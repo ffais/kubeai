@@ -26,13 +26,13 @@ func (r *ModelReconciler) parseModelSource(urlStr string) (modelSource, error) {
 	}
 
 	switch {
-	case u.scheme == "gs":
+	case u.scheme == "gs" && r.SecretNames.GCP != "":
 		src.modelSourcePodAdditions = r.authForGCS()
-	case u.scheme == "oss":
+	case u.scheme == "oss" && r.SecretNames.Alibaba != "":
 		src.modelSourcePodAdditions = r.authForOSS()
-	case u.scheme == "s3":
+	case u.scheme == "s3" && r.SecretNames.AWS != "":
 		src.modelSourcePodAdditions = r.authForS3()
-	case u.scheme == "hf":
+	case u.scheme == "hf" && r.SecretNames.Huggingface != "":
 		src.modelSourcePodAdditions = r.authForHuggingfaceHub()
 	case u.scheme == "pvc":
 		src.modelSourcePodAdditions = r.pvcPodAdditions(u)
@@ -65,10 +65,18 @@ func (c *modelSourcePodAdditions) applyToPodSpec(spec *corev1.PodSpec, container
 
 func (r *ModelReconciler) modelAuthCredentialsForAllSources() *modelSourcePodAdditions {
 	c := &modelSourcePodAdditions{}
-	c.append(r.authForHuggingfaceHub())
-	c.append(r.authForGCS())
-	c.append(r.authForOSS())
-	c.append(r.authForS3())
+	if r.SecretNames.Huggingface != "" {
+		c.append(r.authForHuggingfaceHub())
+	}
+	if r.SecretNames.GCP != "" {
+		c.append(r.authForGCS())
+	}
+	if r.SecretNames.Alibaba != "" {
+		c.append(r.authForOSS())
+	}
+	if r.SecretNames.AWS != "" {
+		c.append(r.authForS3())
+	}
 	return c
 }
 
@@ -80,33 +88,37 @@ func (r *ModelReconciler) modelEnvFrom(m *v1.Model) *modelSourcePodAdditions {
 }
 
 func (r *ModelReconciler) authForS3() *modelSourcePodAdditions {
-	return &modelSourcePodAdditions{
-		env: []corev1.EnvVar{
-			{
-				Name: "AWS_ACCESS_KEY_ID",
-				ValueFrom: &corev1.EnvVarSource{
-					SecretKeyRef: &corev1.SecretKeySelector{
-						LocalObjectReference: corev1.LocalObjectReference{
-							Name: r.SecretNames.AWS,
+	if r.SecretNames.AWS != "" {
+		return &modelSourcePodAdditions{
+			env: []corev1.EnvVar{
+				{
+					Name: "AWS_ACCESS_KEY_ID",
+					ValueFrom: &corev1.EnvVarSource{
+						SecretKeyRef: &corev1.SecretKeySelector{
+							LocalObjectReference: corev1.LocalObjectReference{
+								Name: r.SecretNames.AWS,
+							},
+							Key:      "accessKeyID",
+							Optional: ptr.To(true),
 						},
-						Key:      "accessKeyID",
-						Optional: ptr.To(true),
+					},
+				},
+				{
+					Name: "AWS_SECRET_ACCESS_KEY",
+					ValueFrom: &corev1.EnvVarSource{
+						SecretKeyRef: &corev1.SecretKeySelector{
+							LocalObjectReference: corev1.LocalObjectReference{
+								Name: r.SecretNames.AWS,
+							},
+							Key:      "secretAccessKey",
+							Optional: ptr.To(true),
+						},
 					},
 				},
 			},
-			{
-				Name: "AWS_SECRET_ACCESS_KEY",
-				ValueFrom: &corev1.EnvVarSource{
-					SecretKeyRef: &corev1.SecretKeySelector{
-						LocalObjectReference: corev1.LocalObjectReference{
-							Name: r.SecretNames.AWS,
-						},
-						Key:      "secretAccessKey",
-						Optional: ptr.To(true),
-					},
-				},
-			},
-		},
+		}
+	} else {
+		return nil
 	}
 }
 
