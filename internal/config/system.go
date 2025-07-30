@@ -11,7 +11,7 @@ import (
 )
 
 type System struct {
-	SecretNames SecretNames `json:"secretNames" validate:"required"`
+	SecretNames SecretNames `json:"secretNames"`
 
 	ModelServers ModelServers `json:"modelServers" validate:"required"`
 
@@ -146,10 +146,10 @@ func (a *ModelAutoscaling) AverageWindowCount() int {
 }
 
 type SecretNames struct {
-	Alibaba     string `json:"alibaba" required:"true"`
-	AWS         string `json:"aws" required:"true"`
-	GCP         string `json:"gcp" required:"true"`
-	Huggingface string `json:"huggingface" required:"true"`
+	Alibaba string `json:"alibaba"`
+	AWS     string `json:"aws"`
+	GCP     string `json:"gcp"`
+	F       string `json:"huggingface"`
 }
 
 type Messaging struct {
@@ -195,7 +195,7 @@ type ResourceProfile struct {
 	NodeSelector     map[string]string   `json:"nodeSelector,omitempty"`
 	Affinity         *corev1.Affinity    `json:"affinity,omitempty"`
 	Tolerations      []corev1.Toleration `json:"tolerations,omitempty"`
-	SchedulerName	 string              `json:"schedulerName,omitempty"`
+	SchedulerName    string              `json:"schedulerName,omitempty"`
 	RuntimeClassName *string             `json:"runtimeClassName,omitempty"`
 }
 
