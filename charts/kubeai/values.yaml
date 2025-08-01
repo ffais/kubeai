@@ -255,7 +255,7 @@ open-webui:
 replicaCount: 1
 
 image:
-  repository: substratusai/kubeai
+  repository: ffais/kubeai
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
