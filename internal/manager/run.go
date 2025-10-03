@@ -29,6 +29,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/cache"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/client/apiutil"
+	controllerconfig "sigs.k8s.io/controller-runtime/pkg/config"
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 
@@ -137,6 +138,7 @@ func Run(ctx context.Context, k8sCfg *rest.Config, cfg config.System) error {
 		SecureServing: false,
 	}
 
+	SkipNameValidation := true
 	mgr, err := ctrl.NewManager(k8sCfg, ctrl.Options{
 		Scheme:  Scheme,
 		Metrics: metricsServerOptions,
@@ -149,6 +151,7 @@ func Run(ctx context.Context, k8sCfg *rest.Config, cfg config.System) error {
 		LeaseDuration:           ptr.To(cfg.LeaderElection.LeaseDuration.Duration),
 		RenewDeadline:           ptr.To(cfg.LeaderElection.RenewDeadline.Duration),
 		RetryPeriod:             ptr.To(cfg.LeaderElection.RetryPeriod.Duration),
+		Controller:              controllerconfig.Controller{SkipNameValidation: &SkipNameValidation},
 		Cache: cache.Options{
 			Scheme: Scheme, //mgr.GetScheme(),
 			DefaultNamespaces: map[string]cache.Config{
