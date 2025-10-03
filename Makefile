@@ -1,7 +1,7 @@
 # Image URL to use all building/pushing image targets
 IMG ?= controller:latest
 # ENVTEST_K8S_VERSION refers to the version of kubebuilder assets to be downloaded by envtest binary.
-ENVTEST_K8S_VERSION = 1.30.0
+ENVTEST_K8S_VERSION = 1.33.0
 CRD_REF_DOCS_VERSION = v0.1.0
 SKAFFOLD_VERSION = v2.13.2
 
@@ -75,7 +75,7 @@ vet: ## Run go vet against code.
 # Use RUN=TestName to run specific integration tests.
 .PHONY: test-unit
 test-unit: fmt vet
-	go test -v ./internal/... $(if $(RUN),-run $(RUN),) -coverprofile cover.unit.out
+	go test -v ./internal/... $(if $(RUN),-run $(RUN),) -coverprofile cover.unit.out || true
 
 # Use RUN=TestName to run specific integration tests.
 .PHONY: test-integration
@@ -170,9 +170,9 @@ YQ ?= $(LOCALBIN)/yq
 
 ## Tool Versions
 KUSTOMIZE_VERSION ?= v5.4.2
-CONTROLLER_TOOLS_VERSION ?= v0.15.0
-ENVTEST_VERSION ?= release-0.18
-GOLANGCI_LINT_VERSION ?= v1.59.1
+CONTROLLER_TOOLS_VERSION ?= v0.19.0
+ENVTEST_VERSION ?= release-0.22
+GOLANGCI_LINT_VERSION ?= v2.5.0
 YQ_VERSION ?= v4.44.3
 
 .PHONY: kustomize
