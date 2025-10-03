@@ -182,7 +182,7 @@ func Run(ctx context.Context, k8sCfg *rest.Config, cfg config.System) error {
 		Group:   "",
 		Version: "v1",
 		Kind:    "Pod",
-	}, false, mgr.GetConfig(), serializer.NewCodecFactory(mgr.GetScheme()), mgr.GetHTTPClient())
+	}, false, false, mgr.GetConfig(), serializer.NewCodecFactory(mgr.GetScheme()), mgr.GetHTTPClient())
 	if err != nil {
 		return fmt.Errorf("unable to create pod REST client: %w", err)
 	}
