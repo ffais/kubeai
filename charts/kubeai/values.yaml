@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 crds:
-  enabled: true
+  enabled: false
 
 secrets:
   alibaba:
@@ -253,10 +253,10 @@ open-webui:
 replicaCount: 1
 
 image:
-  repository: substratusai/kubeai
+  repository: smartcommunitylab/kubeai
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "test"
 
 # The imagePullSecrets will be used to pull both the kubeai controller image and the model images.
 imagePullSecrets: []
