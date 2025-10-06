@@ -59,7 +59,10 @@ modelServers:
       nvidia-gpu: "fedirz/faster-whisper-server:latest-cuda"
   Infinity:
     images:
-      default: "michaelf34/infinity:latest"
+      default: "michaelf34/infinity:0.0.77"
+      cpu: "michaelf34/infinity:0.0.77-cpu"
+      amd-gpu: "michaelf34/infinity:0.0.77-rocm"
+      nvidia-gpu: "michaelf34/infinity:0.0.77"
 
 modelLoading:
   image: "substratusai/kubeai-model-loader:v0.14.0"
