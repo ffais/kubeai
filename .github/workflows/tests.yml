@@ -57,9 +57,16 @@ jobs:
 
       - name: Start kind cluster
         run: kind create cluster
-
+      - name: Free Space before
+        run: |
+          echo "Free space:"
+          df -h
       - name: Run the e2e testcase
         run: make test-e2e TEST_CASE=${{ matrix.testcase }}
+      - name: Free Space after
+        run: |
+          echo "Free space:"
+          df -h
 
   e2e-engines:
     runs-on: ubuntu-latest
