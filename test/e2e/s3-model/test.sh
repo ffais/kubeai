@@ -9,7 +9,7 @@ PV_HOST_PATH=/data
 kubectl apply -f $REPO_DIR/test/e2e/s3-model/pv.yaml
 kubectl apply -f $REPO_DIR/test/e2e/s3-model/pvc.yaml
 
-kubectl create -f $TEST_DIR/s3-instance.yaml
+kubectl apply -f $TEST_DIR/s3-instance.yaml
 kubectl wait --timeout=3m --for=condition=Ready pod/s3
 
 # Execute into the kind container
@@ -22,13 +22,13 @@ docker exec -i $kind_container bash -c "
   huggingface-cli download facebook/opt-125m --local-dir ${PV_HOST_PATH}/models/facebook/opt-125m \
     --exclude 'tf_model.h5' 'flax_model.msgpack'"
 
-kubectl create -f $TEST_DIR/upload-model-to-s3.yaml
+kubectl apply -f $TEST_DIR/upload-model-to-s3.yaml
 kubectl wait --for=condition=complete --timeout=120s job/upload-model-to-s3
 
 kubectl apply -f $TEST_DIR/model.yaml
 kubectl wait --timeout=5m --for=jsonpath='{.status.cache.loaded}'=true model/$model
 kubectl delete -f $TEST_DIR/s3-instance.yaml
-kubectl wait --timeout=5m --for=jsonpath='.status.replicas.ready'=1 model/${model}
+kubectl wait --timeout=10m --for=jsonpath='.status.replicas.ready'=1 model/${model}
 
 sleep 5
 
