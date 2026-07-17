@@ -36,7 +36,8 @@ jobs:
       meta-tags: |
         type=sha
       set-meta-labels: true
-      registry: ghcr.io
     secrets:
-      username: ${{ github.actor }}
-      password: ${{ secrets.GITHUB_TOKEN }}
+      registry-auths: |
+        - registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
