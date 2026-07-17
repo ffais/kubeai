@@ -10,11 +10,6 @@ on:
       - '**/README.md'
   pull_request:
 
-# Defines two custom environment variables for the workflow. These are used for the Container registry domain, and a name for the Docker image that this workflow builds.
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: kubeai-project/kubeai
-
 jobs:
   build:
     uses: docker/github-builder/.github/workflows/build.yml@v1
@@ -31,7 +26,7 @@ jobs:
       cache: true
       cache-scope: kubeai
       cache-mode: max
-      meta-images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+      meta-images: ghcr.io/${{ github.repository }}
       set-meta-labels: true
     secrets:
       registry-auths: |
