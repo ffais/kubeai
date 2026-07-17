@@ -32,7 +32,7 @@ jobs:
       cache: true
       cache-scope: kubeai
       cache-mode: max
-      meta-images: kubeai-project/kubeai
+      meta-images: ghcr.io/kubeai-project/kubeai
       set-meta-labels: true
     secrets:
       registry-auths: |
