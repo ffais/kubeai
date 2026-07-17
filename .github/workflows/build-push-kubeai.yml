@@ -14,6 +14,9 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: kubeai-project/kubeai
 
+permissions:
+  contents: read
+  packages: write
 jobs:
   build:
     uses: docker/github-builder/.github/workflows/build.yml@v1
@@ -23,12 +26,17 @@ jobs:
     with:
       output: image
       push: true
+      platforms: linux/amd64,linux/arm64
       context: .
       file: Dockerfile
       target: runtime
       cache: true
       cache-scope: kubeai
-      meta-images: ghcr.io/kubeai-project/kubeai
+      meta-images: kubeai-project/kubeai
       meta-tags: |
         type=sha
       set-meta-labels: true
+      registry: ghcr.io
+    secrets:
+      username: ${{ github.actor }}
+      password: ${{ secrets.GITHUB_TOKEN }}
