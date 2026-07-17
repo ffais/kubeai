@@ -26,7 +26,7 @@ jobs:
       cache: true
       cache-scope: kubeai
       cache-mode: max
-      meta-images: ghcr.io/${{ github.organization }}/kubeai
+      meta-images: ghcr.io/${{ github.repository_owner }}/kubeai
       set-meta-labels: true
     secrets:
       registry-auths: |
