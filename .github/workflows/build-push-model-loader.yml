@@ -1,4 +1,4 @@
-name: Build and Push kubeai Docker image
+name: Build and Push kubeai-model-loader Docker image
 
 on:
   push:
@@ -21,7 +21,7 @@ jobs:
       output: image
       push: true
       platforms: linux/amd64,linux/arm64
-      context: .
+      context: ./components/model-loader
       file: Dockerfile
       cache: true
       cache-scope: kubeai-model-loader
