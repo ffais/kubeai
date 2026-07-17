@@ -24,6 +24,7 @@ jobs:
     permissions:
       contents: read # to fetch the repository content
       id-token: write # for signing attestation(s) with GitHub OIDC Token
+      packages: write
     with:
       output: image
       push: true
