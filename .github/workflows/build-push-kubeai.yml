@@ -1,8 +1,5 @@
 name: Build and Push kubeai Docker image
 
-permissions:
-  contents: read
-
 on:
   push:
     branches:
