@@ -31,7 +31,7 @@ jobs:
       cache: true
       cache-scope: kubeai
       cache-mode: max
-      meta-images: ghcr.io/ffais/kubeai
+      meta-images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
       set-meta-labels: true
     secrets:
       registry-auths: |
