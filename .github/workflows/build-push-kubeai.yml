@@ -29,12 +29,10 @@ jobs:
       platforms: linux/amd64,linux/arm64
       context: .
       file: Dockerfile
-      target: runtime
       cache: true
       cache-scope: kubeai
+      cache-mode: max
       meta-images: kubeai-project/kubeai
-      meta-tags: |
-        type=sha
       set-meta-labels: true
     secrets:
       registry-auths: |
